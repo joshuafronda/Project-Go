@@ -17,7 +17,9 @@ const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentView, setCurrentView] = useState('Dashboard');
 
-  const handleLogin = (user: User) => {
+  const handleLogin = (role: UserRole) => {
+    // Simulate auth
+    const user = MOCK_USERS[role];
     setCurrentUser(user);
     setCurrentView('Dashboard');
   };
