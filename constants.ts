@@ -1,6 +1,12 @@
 import { UserRole, User, Task, Transaction, Milestone, Document, Notification, ChangeRequest } from './types';
 
 export const MOCK_USERS: Record<UserRole, User> = {
+  [UserRole.SYSTEM_ADMIN]: {
+    id: 'admin',
+    name: 'System Administrator',
+    role: UserRole.SYSTEM_ADMIN,
+    avatar: 'https://picsum.photos/seed/admin/100/100'
+  },
   [UserRole.PROJECT_OWNER]: {
     id: 'u1',
     name: 'Alex Sterling',

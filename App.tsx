@@ -8,6 +8,7 @@ import { ProjectOwnerView } from './components/views/ProjectOwnerView';
 import { FinanceView } from './components/views/FinanceView';
 import { ManagerView } from './components/views/ManagerView';
 import { EngineerView } from './components/views/EngineerView';
+import { SystemAdminView } from './components/views/SystemAdminView';
 import { ProjectsView } from './components/views/ProjectsView';
 import { MessagesView } from './components/views/MessagesView';
 import { DocumentsView } from './components/views/DocumentsView';
@@ -37,38 +38,80 @@ const App: React.FC = () => {
     if (currentView === 'Messages') return <MessagesView currentUser={currentUser} />;
     if (currentView === 'Documents') return <DocumentsView currentUser={currentUser} />;
     if (currentView === 'Reports') return <ReportsView />;
-    
-    // For "Tasks" or "Dashboard" we map to role specific view for now, 
-    // though ideally tasks would be a unified view too.
-    // Keeping role specific dashboards as the "Home" view.
-    if (currentView === 'Dashboard' || currentView === 'Tasks') {
-        switch (currentUser.role) {
-        case UserRole.PROJECT_OWNER:
-            return <ProjectOwnerView />;
-        case UserRole.FINANCE:
-            return <FinanceView />;
-        case UserRole.PROJECT_MANAGER:
-            return <ManagerView currentUser={currentUser} />;
-        case UserRole.PROJECT_ENGINEER:
-            return <EngineerView currentUser={currentUser} />;
-        default:
-            return <div>Role not recognized</div>;
-        }
+
+    switch (currentUser.role) {
+      case UserRole.SYSTEM_ADMIN:
+        return <SystemAdminView currentUser={currentUser} />;
+      case UserRole.PROJECT_OWNER:
+        return <ProjectOwnerView />;
+      case UserRole.FINANCE:
+        return <FinanceView />;
+      case UserRole.PROJECT_MANAGER:
+        return <ManagerView />;
+      case UserRole.PROJECT_ENGINEER:
+        return <EngineerView />;
+      default:
+        return <div>Role not found</div>;
     }
-    
-    return <div className="p-10 text-center text-gray-500">Module under construction</div>;
+  };
+
+  const getRoleMeta = (role: UserRole) => {
+    switch (role) {
+      case UserRole.SYSTEM_ADMIN:
+        return {
+          title: 'System Administrator',
+          icon: '🛡️',
+          color: 'bg-purple-600',
+          description: 'System management and user administration'
+        };
+      case UserRole.PROJECT_OWNER:
+        return {
+          title: 'Project Owner',
+          icon: '👔',
+          color: 'bg-blue-600',
+          description: 'Strategic oversight & Approvals'
+        };
+      case UserRole.FINANCE:
+        return {
+          title: 'Finance',
+          icon: '💰',
+          color: 'bg-green-600',
+          description: 'Budgets & Expenses'
+        };
+      case UserRole.PROJECT_MANAGER:
+        return {
+          title: 'Project Manager',
+          icon: '📋',
+          color: 'bg-purple-600',
+          description: 'Tasks, Team, Risks'
+        };
+      case UserRole.PROJECT_ENGINEER:
+        return {
+          title: 'Project Engineer',
+          icon: '🔧',
+          color: 'bg-orange-600',
+          description: 'Execution & Reporting'
+        };
+      default:
+        return {
+          title: 'User',
+          icon: '👤',
+          color: 'bg-gray-600',
+          description: 'System User'
+        };
+    }
   };
 
   return (
     <ProjectProvider>
-        <DashboardLayout 
-            user={currentUser} 
-            onLogout={handleLogout} 
-            currentView={currentView}
-            onNavigate={setCurrentView}
-        >
-        {renderContent()}
-        </DashboardLayout>
+      <DashboardLayout 
+        user={currentUser} 
+        onLogout={handleLogout} 
+        currentView={currentView}
+        onNavigate={setCurrentView}
+      >
+      {renderContent()}
+      </DashboardLayout>
     </ProjectProvider>
   );
 };
