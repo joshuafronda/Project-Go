@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useProject } from '../../context/ProjectContext';
 import { Card } from '../ui/Card';
 import { Modal } from '../ui/Modal';
+import { LocationPicker } from '../LocationPicker';
 import { Project, UserRole, User } from '../../types';
-import { Plus, Calendar, Target, DollarSign, BarChart } from 'lucide-react';
+import { Plus, Calendar, Target, DollarSign, BarChart, MapPin } from 'lucide-react';
 
 interface ProjectsViewProps {
   currentUser: User;
@@ -16,7 +17,12 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentUser }) => {
     name: '',
     description: '',
     status: 'Planning',
-    budget: 0
+    budget: 0,
+    location: {
+      lat: 14.5995,
+      lng: 120.9842,
+      address: 'Manila, Philippines'
+    }
   });
 
   const canEdit = currentUser.role === UserRole.PROJECT_MANAGER || currentUser.role === UserRole.PROJECT_OWNER;
@@ -33,10 +39,20 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentUser }) => {
         endDate: newProject.endDate || '',
         progress: 0,
         budget: Number(newProject.budget),
-        manager: currentUser.name
+        manager: currentUser.name,
+        location: newProject.location
       } as Project);
       setIsModalOpen(false);
-      setNewProject({ name: '', description: '', budget: 0 });
+      setNewProject({ 
+        name: '', 
+        description: '', 
+        budget: 0,
+        location: {
+          lat: 14.5995,
+          lng: 120.9842,
+          address: 'Manila, Philippines'
+        }
+      });
     }
   };
 
@@ -91,6 +107,12 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentUser }) => {
                     <Target size={16} className="mr-2 text-gray-400" />
                     <span>Manager: {project.manager}</span>
                 </div>
+                {project.location && (
+                  <div className="flex items-center">
+                    <MapPin size={16} className="mr-2 text-gray-400" />
+                    <span className="truncate">{project.location.address}</span>
+                  </div>
+                )}
                 </div>
 
                 <div className="border-t border-gray-100 pt-4">
@@ -159,6 +181,19 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentUser }) => {
               className="w-full rounded-lg border-gray-300 border p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               value={newProject.budget}
               onChange={e => setNewProject({...newProject, budget: Number(e.target.value)})}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Project Location</label>
+            <LocationPicker
+              onLocationSelect={(lat, lng, address) => {
+                setNewProject({
+                  ...newProject,
+                  location: { lat, lng, address }
+                });
+              }}
+              initialLocation={newProject.location || { lat: 14.5995, lng: 120.9842, address: 'Manila, Philippines' }}
+              height="250px"
             />
           </div>
           <div className="pt-4">

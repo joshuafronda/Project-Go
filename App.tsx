@@ -13,6 +13,7 @@ import { ProjectsView } from './components/views/ProjectsView';
 import { MessagesView } from './components/views/MessagesView';
 import { DocumentsView } from './components/views/DocumentsView';
 import { ReportsView } from './components/views/ReportsView';
+import 'leaflet/dist/leaflet.css';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);

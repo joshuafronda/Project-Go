@@ -33,6 +33,11 @@ export interface Project {
   progress: number; // 0-100
   budget: number;
   manager: string;
+  location?: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
 }
 
 export interface Task {
