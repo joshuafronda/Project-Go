@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useProject } from '../../context/ProjectContext';
 import { User, UserRole } from '../../types';
 import { Card } from '../ui/Card';
-import { Send, Hash, User as UserIcon } from 'lucide-react';
+import { Send, Hash, User as UserIcon, MessageCircle, Users, Phone, Mail } from 'lucide-react';
 
 interface MessagesViewProps {
   currentUser: User;
@@ -32,13 +32,44 @@ export const MessagesView: React.FC<MessagesViewProps> = ({ currentUser }) => {
     setInputText('');
   };
 
+  // Key contacts for direct communication
+  const keyContacts = [
+    {
+      id: 'project-owner',
+      name: 'Alexander Mitchell',
+      role: 'Project Owner',
+      avatar: 'https://picsum.photos/seed/alexander/100/100',
+      status: 'online',
+      email: 'alexander@projectgo.com',
+      phone: '+1-555-0001'
+    },
+    {
+      id: 'project-manager',
+      name: 'Marcus Ford',
+      role: 'Project Manager',
+      avatar: 'https://picsum.photos/seed/marcus/100/100',
+      status: 'online',
+      email: 'marcus@projectgo.com',
+      phone: '+1-555-0002'
+    },
+    {
+      id: 'finance',
+      name: 'Lisa Rodriguez',
+      role: 'Finance Manager',
+      avatar: 'https://picsum.photos/seed/lisa/100/100',
+      status: 'away',
+      email: 'lisa@projectgo.com',
+      phone: '+1-555-0003'
+    }
+  ];
+
   return (
     <div className="h-[calc(100vh-140px)] flex flex-col md:flex-row gap-6">
-      {/* Sidebar - Channels */}
+      {/* Sidebar - General Communication */}
       <div className="w-full md:w-64 flex-shrink-0 flex flex-col gap-4">
         <Card className="h-full flex flex-col">
           <div className="p-4 border-b border-gray-100 font-bold text-gray-800">
-            Channels
+            General Communication
           </div>
           <div className="p-2 space-y-1 flex-1 overflow-y-auto">
             <button
@@ -49,28 +80,43 @@ export const MessagesView: React.FC<MessagesViewProps> = ({ currentUser }) => {
               <Hash size={16} className="mr-2 opacity-70" />
               General
             </button>
-            {projects.map(p => (
-              <button
-                key={p.id}
-                onClick={() => setActiveChannel(p.id)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center transition-colors
-                  ${activeChannel === p.id ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
-              >
-                <Hash size={16} className="mr-2 opacity-70" />
-                {p.name.length > 20 ? p.name.substring(0, 20) + '...' : p.name}
-              </button>
-            ))}
+            <button
+              onClick={() => setActiveChannel('announcements')}
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium flex items-center transition-colors
+                ${activeChannel === 'announcements' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}
+            >
+              <MessageCircle size={16} className="mr-2 opacity-70" />
+              Announcements
+            </button>
           </div>
           
           <div className="p-4 border-t border-gray-100">
-             <h4 className="text-xs font-bold text-gray-400 uppercase mb-2">Team Online</h4>
-             <div className="flex items-center space-x-2 text-sm text-gray-600">
-               <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-               <span>Marcus Ford</span>
-             </div>
-             <div className="flex items-center space-x-2 text-sm text-gray-600 mt-1">
-               <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-               <span>Emily Dao</span>
+             <h4 className="text-xs font-bold text-gray-400 uppercase mb-3">Quick Contacts</h4>
+             <div className="space-y-3">
+               {keyContacts.map(contact => (
+                 <div key={contact.id} className="flex items-center justify-between">
+                   <div className="flex items-center space-x-2">
+                     <div className="relative">
+                       <img src={contact.avatar} className="w-8 h-8 rounded-full" alt={contact.name} />
+                       <span className={`absolute bottom-0 right-0 w-2 h-2 rounded-full border-2 border-white ${
+                         contact.status === 'online' ? 'bg-green-500' : 'bg-yellow-500'
+                       }`}></span>
+                     </div>
+                     <div>
+                       <p className="text-xs font-medium text-gray-700">{contact.name}</p>
+                       <p className="text-xs text-gray-400">{contact.role}</p>
+                     </div>
+                   </div>
+                   <div className="flex items-center space-x-1">
+                     <button className="p-1 text-gray-400 hover:text-blue-600 transition-colors">
+                       <Mail size={12} />
+                     </button>
+                     <button className="p-1 text-gray-400 hover:text-green-600 transition-colors">
+                       <Phone size={12} />
+                     </button>
+                   </div>
+                 </div>
+               ))}
              </div>
           </div>
         </Card>
@@ -81,10 +127,23 @@ export const MessagesView: React.FC<MessagesViewProps> = ({ currentUser }) => {
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white z-10">
            <div className="flex items-center">
-             <Hash size={20} className="text-gray-400 mr-2" />
-             <h3 className="font-bold text-gray-900">
-               {activeChannel === 'general' ? 'General' : projects.find(p => p.id === activeChannel)?.name || 'Unknown Channel'}
-             </h3>
+             {activeChannel === 'general' ? (
+               <>
+                 <Hash size={20} className="text-gray-400 mr-2" />
+                 <div>
+                   <h3 className="font-bold text-gray-900">General</h3>
+                   <p className="text-xs text-gray-500">Company-wide communication</p>
+                 </div>
+               </>
+             ) : (
+               <>
+                 <MessageCircle size={20} className="text-gray-400 mr-2" />
+                 <div>
+                   <h3 className="font-bold text-gray-900">Announcements</h3>
+                   <p className="text-xs text-gray-500">Important updates and notices</p>
+                 </div>
+               </>
+             )}
            </div>
            <span className="text-xs text-gray-500">{channelMessages.length} messages</span>
         </div>
@@ -124,7 +183,7 @@ export const MessagesView: React.FC<MessagesViewProps> = ({ currentUser }) => {
             <input
               type="text"
               className="w-full bg-gray-100 text-gray-800 placeholder-gray-500 border-0 rounded-xl px-4 py-3 pr-12 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none"
-              placeholder={`Message #${activeChannel === 'general' ? 'General' : projects.find(p => p.id === activeChannel)?.name}...`}
+              placeholder={`Message in ${activeChannel === 'general' ? 'General' : 'Announcements'}...`}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
             />

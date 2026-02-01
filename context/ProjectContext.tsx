@@ -57,15 +57,14 @@ export const ProjectProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 'm1', channelId: 'general', userId: 'u3', userName: 'Marcus Ford', userAvatar: 'https://picsum.photos/seed/marcus/100/100', content: 'Team, please update your progress logs by EOD.', timestamp: '10:30 AM' },
+    { id: 'm2', channelId: 'general', userId: 'u4', userName: 'Emily Dao', userAvatar: 'https://picsum.photos/seed/emily/100/100', content: 'Copy that. Uploading site photos now.', timestamp: '10:32 AM' }
+  ]);
   const [documents, setDocuments] = useState<Document[]>(INITIAL_DOCUMENTS);
   const [notifications, setNotifications] = useState<Notification[]>(INITIAL_NOTIFICATIONS);
   const [changeRequests, setChangeRequests] = useState<ChangeRequest[]>(INITIAL_CHANGE_REQUESTS);
   const [transactions, setTransactions] = useState<Transaction[]>(INITIAL_TRANSACTIONS);
-
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 'm1', channelId: 'general', userId: 'u3', userName: 'Marcus Ford', userAvatar: MOCK_USERS[UserRole.PROJECT_MANAGER].avatar, content: 'Team, please update your progress logs by EOD.', timestamp: '10:30 AM' },
-    { id: 'm2', channelId: 'general', userId: 'u4', userName: 'Emily Dao', userAvatar: MOCK_USERS[UserRole.PROJECT_ENGINEER].avatar, content: 'Copy that. Uploading site photos now.', timestamp: '10:32 AM' }
-  ]);
 
   const addProject = (project: Project) => setProjects([...projects, project]);
   const addTask = (task: Task) => setTasks([...tasks, task]);

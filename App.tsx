@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { UserRole, User } from './types';
-import { MOCK_USERS } from './constants';
 import { ProjectProvider } from './context/ProjectContext';
 import { Login } from './components/Login';
 import { DashboardLayout } from './components/DashboardLayout';
@@ -15,15 +14,63 @@ import { DocumentsView } from './components/views/DocumentsView';
 import { ReportsView } from './components/views/ReportsView';
 import 'leaflet/dist/leaflet.css';
 
+// Import the same user data from Login component
+const AUTH_CONFIG = {
+  USERS: [
+    {
+      id: 'admin',
+      username: 'superadmin',
+      password: 'admin2024!',
+      role: UserRole.SYSTEM_ADMIN,
+      name: 'System Administrator'
+    },
+    {
+      id: 'u1',
+      username: 'admin',
+      password: 'admin123',
+      role: UserRole.PROJECT_OWNER,
+      name: 'Alex Sterling'
+    },
+    {
+      id: 'u2',
+      username: 'finance',
+      password: 'finance123',
+      role: UserRole.FINANCE,
+      name: 'Sarah Chen'
+    },
+    {
+      id: 'u3',
+      username: 'manager',
+      password: 'manager123',
+      role: UserRole.PROJECT_MANAGER,
+      name: 'Marcus Ford'
+    },
+    {
+      id: 'u4',
+      username: 'engineer',
+      password: 'engineer123',
+      role: UserRole.PROJECT_ENGINEER,
+      name: 'Emily Dao'
+    }
+  ] as const,
+} as const;
+
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentView, setCurrentView] = useState('Dashboard');
 
   const handleLogin = (role: UserRole) => {
-    // Simulate auth
-    const user = MOCK_USERS[role];
-    setCurrentUser(user);
-    setCurrentView('Dashboard');
+    // Find user from AUTH_CONFIG (same as Login component)
+    const user = AUTH_CONFIG.USERS.find(u => u.role === role);
+    if (user) {
+      setCurrentUser({
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        avatar: `https://picsum.photos/seed/${user.username}/100/100`
+      });
+      setCurrentView('Dashboard');
+    }
   };
 
   const handleLogout = () => {
@@ -50,7 +97,7 @@ const App: React.FC = () => {
       case UserRole.PROJECT_MANAGER:
         return <ManagerView />;
       case UserRole.PROJECT_ENGINEER:
-        return <EngineerView />;
+        return <EngineerView currentUser={currentUser} />;
       default:
         return <div>Role not found</div>;
     }
